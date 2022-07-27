@@ -2,7 +2,7 @@ pipeline {
 
   environment {
     dockerimagename = "thetips4you/nodeapp"
-    dockerImage = ""
+    dockerImage = "chroot300/nodeapp"
   }
 
   agent any
@@ -11,7 +11,7 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/shazforiot/nodeapp_test.git'
+        git 'https://github.com/jairah-flores/nodeapptest.git'
       }
     }
 
