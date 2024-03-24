@@ -1,12 +1,8 @@
 def charts_repo = 'https://github.com/jairahflores/nodeapptest.git'
 def target_branch = 'master'
-
+def dockerimagename = "chroot200/nodeapp"
+def dockerImage = ""
 pipeline {
-
-  environment {
-    dockerimagename = "chroot200/nodeapp"
-    dockerImage = ""
-  }
 
   agent any
 
@@ -36,12 +32,11 @@ pipeline {
     }
 
     stage('Push Image to Image Repository') {
-      environment {
-               registryCredential = 'dockerhublogin'
-           }
+
       steps{
         script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+          withCredentials([usernamePassword(credentialsId: "dockerhublogin" , passwordVariable: 'password', usernameVariable: 'username')]){
+            docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
             dockerImage.push("latest")
           }
         }
@@ -55,7 +50,7 @@ pipeline {
         }
       }
     }
-
+    
   }
 
 }
