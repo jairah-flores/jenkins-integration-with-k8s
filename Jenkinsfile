@@ -1,4 +1,5 @@
 def charts_repo = 'https://github.com/jairah-flores/nodeapptest.git'
+def target_branch = 'master'
 
 pipeline {
 
@@ -14,7 +15,7 @@ pipeline {
     stage('Checkout Source') {
       steps {
         script {
-        withCredentials([usernamePassword(credentialsId: "github-creds", passwordVariable: 'password', usernameVariable: 'username')]{
+        withCredentials([usernamePassword(credentialsId: "github-creds", passwordVariable: 'password', usernameVariable: 'username')]){
             git credentialsId: 'github-creds',
             url: charts_repo
             sh """
