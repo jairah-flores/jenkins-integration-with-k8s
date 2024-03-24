@@ -2,6 +2,7 @@ def charts_repo = 'https://github.com/jairahflores/nodeapptest.git'
 def target_branch = 'master'
 def dockerimagename = "chroot200/nodeapp"
 def dockerImage = ""
+
 pipeline {
 
   agent any
@@ -46,6 +47,7 @@ pipeline {
     stage('Deploy Application to Kubernetes') {
       steps {
         script {
+          // Deploy deployment and service
           kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "kubernetes")
         }
       }
