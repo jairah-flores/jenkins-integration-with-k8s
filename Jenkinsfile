@@ -1,4 +1,4 @@
-def charts_repo = 'https://github.com/jairahflores/jenkins-integration-with-k8s.git'
+def charts_repo = 'https://github.com/jairahflores/nodeapptest.git'
 def target_branch = 'master'
 
 pipeline {
@@ -27,7 +27,7 @@ pipeline {
       }
     }
 
-    stage('Pull image') {
+    stage('Build image') {
       steps{
         script {
           dockerImage = docker.pull dockerimagename
@@ -35,18 +35,18 @@ pipeline {
       }
     }
 
-    // stage('Pushing Image') {
-    //   environment {
-    //            registryCredential = 'dockerhublogin'
-    //        }
-    //   steps{
-    //     script {
-    //       docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-    //         dockerImage.push("latest")
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Pushing Image') {
+      environment {
+               registryCredential = 'dockerhublogin'
+           }
+      steps{
+        script {
+          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+            dockerImage.push("latest")
+          }
+        }
+      }
+    }
 
     stage('Deploying App to Kubernetes') {
       steps {
