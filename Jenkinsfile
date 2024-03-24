@@ -35,7 +35,7 @@ pipeline {
       }
     }
 
-    stage('Pushing Image') {
+    stage('Push Image to Image Repository') {
       environment {
                registryCredential = 'dockerhublogin'
            }
@@ -48,7 +48,7 @@ pipeline {
       }
     }
 
-    stage('Deploying App to Kubernetes') {
+    stage('Deploy Application to Kubernetes') {
       steps {
         script {
           kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "kubernetes")
