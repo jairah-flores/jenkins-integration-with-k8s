@@ -8,7 +8,7 @@ pipeline {
 
   stages {
 
-    stage('Checkout Source') {
+    stage('Checkout Git Repository') {
       steps {
         script {
         withCredentials([usernamePassword(credentialsId: "github-creds", passwordVariable: 'password', usernameVariable: 'username')]){
@@ -35,7 +35,7 @@ pipeline {
         steps {
             script {
                 withCredentials([usernamePassword(credentialsId: "dockerhublogin", passwordVariable: 'password', usernameVariable: 'username')]) {
-                    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhublogin') {
                         dockerImage.push("latest")
                     }
                 }
