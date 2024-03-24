@@ -1,7 +1,9 @@
+def charts_repo = 'https://github.com/jairah-flores/nodeapptest.git'
+
 pipeline {
 
   environment {
-    dockerimagename = "chroot300/nodeapp"
+    dockerimagename = "chroot200/nodeapp"
     dockerImage = ""
   }
 
@@ -11,7 +13,16 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/jairah-flores/nodeapptest.git'
+        script {
+        withCredentials([usernamePassword(credentialsId: "github-creds", passwordVariable: 'password', usernameVariable: 'username')]{
+            git credentialsId: 'github-creds',
+            url: charts_repo
+            sh """
+                git config remote.origin.url ${charts_repo.replaceAll("//","//${username}:${password}@")}
+                git checkout ${target_branch}
+            """
+          }
+        }
       }
     }
 
