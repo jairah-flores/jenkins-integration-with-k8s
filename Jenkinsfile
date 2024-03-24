@@ -32,15 +32,15 @@ pipeline {
     }
 
     stage('Push Image to Image Repository') {
-
-      steps{
-        script {
-          withCredentials([usernamePassword(credentialsId: "dockerhublogin" , passwordVariable: 'password', usernameVariable: 'username')]){
-            docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
+        steps {
+            script {
+                withCredentials([usernamePassword(credentialsId: "dockerhublogin", passwordVariable: 'password', usernameVariable: 'username')]) {
+                    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+                        dockerImage.push("latest")
+                    }
+                }
+            }
         }
-      }
     }
 
     stage('Deploy Application to Kubernetes') {
