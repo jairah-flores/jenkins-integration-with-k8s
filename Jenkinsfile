@@ -1,4 +1,4 @@
-def charts_repo = 'https://github.com/jairah-flores/nodeapptest.git'
+def charts_repo = 'https://github.com/jairahflores/jenkins-integration-with-k8s.git'
 def target_branch = 'master'
 
 pipeline {
