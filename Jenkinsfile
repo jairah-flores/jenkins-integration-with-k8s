@@ -30,7 +30,7 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.pull dockerimagename
+          dockerImage = docker.build dockerimagename
         }
       }
     }
