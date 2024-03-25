@@ -1,0 +1,57 @@
+def charts_repo = 'https://github.com/jairahflores/nodeapptest.git'
+def target_branch = 'master'
+def dockerimagename = "chroot200/nodeapp"
+def dockerImage = ""
+
+pipeline {
+
+  agent any
+
+  stages {
+
+    stage('Checkout Git Repository') {
+      steps {
+        script {
+            withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://127.0.0.1:8200'], vaultSecrets: [[path: 'secret/githubcreds', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
+            git url: charts_repo
+            sh """
+                git config remote.origin.url ${charts_repo.replaceAll("//","//${username}:${password}@")}
+                git checkout ${target_branch}
+            """
+          }
+        }
+      }
+    }
+
+    stage('Build image') {
+      steps{
+        script {
+          dockerImage = docker.build dockerimagename
+        }
+      }
+    }
+
+    stage('Push Image to Docker Repository') {
+        steps {
+            script {
+            withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://127.0.0.1:8200'], vaultSecrets: [[path: 'secret/dockercreds', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
+                docker.withRegistry('https://registry.hub.docker.com') {
+                        dockerImage.push("latest")
+            }
+          }
+        }
+      }
+    }
+
+    // stage('Deploy Application to Kubernetes') {
+    //   steps {
+    //     script {
+    //       // Deploy deployment and service
+    //       kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "kubernetes")
+    //     }
+    //   }
+    // }
+    
+  }
+
+}
